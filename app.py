@@ -4,7 +4,6 @@ import random
 import string
 import json
 import os
-import pyperclip
 
 # Store last 10 used passwords to prevent reuse
 password_history = []
@@ -87,10 +86,6 @@ if password:
     st.subheader(strength)
     for msg in feedback:
         st.write(msg)
-    
-    if st.button("Copy Password"):
-        pyperclip.copy(password)
-        st.success("✅ Password copied to clipboard!")
 
 # Password Length Selection
 st.subheader("🔢 Select Password Length to Generate")
@@ -105,12 +100,10 @@ if st.button("Generate Strong Password"):
     st.session_state["generated_password"] = generate_password(custom_length)
     save_password(st.session_state["generated_password"])
 
-st.text_input("Suggested Password:", value=st.session_state.get("generated_password", ""), key="generated_password_display")
-
-if st.button("Copy Generated Password") and "generated_password" in st.session_state:
-    pyperclip.copy(st.session_state["generated_password"])
-    st.success("✅ Generated password copied to clipboard!")
-
+# **Clipboard-Friendly Password Display (Works on Streamlit Cloud)**
+generated_password = st.session_state.get("generated_password", "")
+if generated_password:
+    st.text_input("Generated Password (Copy it manually):", value=generated_password, key="generated_password_display")
 
 # Sidebar for password history
 st.sidebar.title("🔑 Password History")
@@ -130,4 +123,3 @@ st.markdown("""
     <hr>
     <p style='text-align: center; color: gray;'>© 2025 Password Strength Meter | Developed with ❤️ by Areeba Zafar</p>
 """, unsafe_allow_html=True)
-
